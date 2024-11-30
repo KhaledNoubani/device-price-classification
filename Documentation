@@ -1,0 +1,165 @@
+
+---
+
+# **Mobile Price Classification System Documentation**
+
+## **Table of Contents**
+1. [Introduction](#introduction)
+2. [Dataset Details](#dataset-details)
+3. [Dependencies and Installation](#dependencies-and-installation)
+4. [Project Workflow](#project-workflow)
+5. [Exploratory Data Analysis (EDA)](#exploratory-data-analysis)
+6. [Data Preprocessing](#data-preprocessing)
+7. [Model Training and Evaluation](#model-training-and-evaluation)
+8. [Results and Visualizations](#results-and-visualizations)
+9. [Making Predictions](#making-predictions)
+10. [Files and Directory Structure](#files-and-directory-structure)
+11. [How to Run the Project](#how-to-run-the-project)
+
+---
+
+## **1. Introduction**
+The Mobile Price Classification System is a machine learning project that predicts the price range of mobile devices based on their specifications. The model is trained to classify mobile phones into four price categories (0: Low, 1: Medium, 2: High, 3: Very High) using logistic regression and evaluates the model's performance with advanced metrics and visualizations.
+
+---
+
+## **2. Dataset Details**
+- **Training File**: `/content/train - train.csv`
+- **Test File**: `/content/test - test.csv`
+- **Features**:
+  - Continuous features like `battery_power`, `ram`, `px_height`, etc.
+  - Categorical features like `price_range`.
+- **Target Variable**: `price_range`.
+
+---
+
+## **3. Dependencies and Installation**
+The project requires the following Python libraries:
+
+```bash
+pip install pandas numpy matplotlib seaborn scikit-learn
+```
+
+---
+
+## **4. Project Workflow**
+1. Load the datasets.
+2. Conduct exploratory data analysis (EDA).
+3. Preprocess the data.
+4. Train and evaluate a logistic regression model.
+5. Make predictions on the test dataset.
+6. Visualize model performance and feature importance.
+
+---
+
+## **5. Exploratory Data Analysis (EDA)**
+### Key Steps:
+- Check for missing values in the dataset.
+- Visualize correlations using a heatmap.
+- Plot distributions of the target variable (`price_range`).
+- Generate pair plots and histograms to observe feature relationships and distributions.
+
+---
+
+## **6. Data Preprocessing**
+### Steps:
+1. Handle missing values by filling them with the median.
+2. Scale continuous features using `MinMaxScaler`.
+3. Ensure the test dataset matches the structure of the training dataset.
+
+```python
+def preprocess_data(df, is_training=True, scaler=None):
+    # Fill missing values
+    df.fillna(df.median(), inplace=True)
+    # Scale numerical features
+    continuous_features = [...]
+    if is_training:
+        scaler = MinMaxScaler()
+        df[continuous_features] = scaler.fit_transform(df[continuous_features])
+    else:
+        df[continuous_features] = scaler.transform(df[continuous_features])
+    return df, scaler
+```
+
+---
+
+## **7. Model Training and Evaluation**
+### Model:
+- Logistic Regression with `max_iter=500` and `random_state=42`.
+
+### Metrics:
+- Accuracy, F1-Score, Precision, Recall, ROC-AUC.
+- Confusion matrix visualization.
+
+```python
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+
+# Train the model
+log_reg = LogisticRegression(max_iter=500, random_state=42)
+log_reg.fit(X_train, y_train)
+
+# Evaluate the model
+y_val_pred = log_reg.predict(X_val)
+print("Accuracy:", accuracy_score(y_val, y_val_pred))
+print(classification_report(y_val, y_val_pred))
+```
+
+---
+
+## **8. Results and Visualizations**
+### **Key Results**:
+- Overall accuracy: **X%**
+- ROC-AUC for all classes.
+
+### **Visualizations**:
+1. Confusion Matrix: Heatmap showing true vs. predicted values.
+2. Feature Importance: Coefficients visualized in a bar chart.
+3. Classification Metrics: Bar chart comparing precision, recall, and F1-score for all classes.
+4. ROC Curves: Individual ROC curves for each class with AUC values.
+
+---
+
+## **9. Making Predictions**
+1. Preprocess the test dataset using the scaler fitted on the training data.
+2. Predict `price_range` for test samples.
+3. Save predictions to a CSV file:
+
+```python
+df_test['predicted_price_range'] = y_test_pred
+df_test.to_csv('/content/test_predictions.csv', index=False)
+print("Predictions saved to '/content/test_predictions.csv'")
+```
+
+---
+
+## **10. Files and Directory Structure**
+### Directory:
+```
+/content/
+├── train - train.csv   # Training dataset
+├── test - test.csv     # Test dataset
+├── test_predictions.csv  # Output predictions
+├── project_code.py     # Main project code
+```
+
+---
+
+---
+
+## **11. How to Run the Project**
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/KhaledNoubani/mobile-price-classification.git
+   ```
+2. Install dependencies:
+   ```bash
+   pip install pandas numpy matplotlib seaborn scikit-learn
+   ```
+3. Run the Python script:
+   ```bash
+   python project_code.py
+   ```
+4. View predictions in `test_predictions.csv`.
+
+---
